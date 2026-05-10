@@ -1,20 +1,27 @@
 <template>
-  <div class="main" 
-      @dragenter.prevent 
-      @dragover.prevent 
-      @drop.prevent="onDrop"
-      :style="{ backgroundImage: `url('${backgroundImageUrl}')` }"
+  <div
+    class="main"
+    @dragenter.prevent
+    @dragover.prevent
+    @drop.prevent="onDrop"
+    :style="{ backgroundImage: `url('${backgroundImageUrl}')` }"
   >
-    <progress v-if="uploadProgress !== null" :value="uploadProgress" max="100"></progress>
-    <UploadPopup v-model="showUploadPopup" @upload="onUploadClicked" @createFolder="createFolder"></UploadPopup>
-
-
+    <progress
+      v-if="uploadProgress !== null"
+      :value="uploadProgress"
+      max="100"
+    ></progress>
+    <UploadPopup
+      v-model="showUploadPopup"
+      @upload="onUploadClicked"
+      @createFolder="createFolder"
+    ></UploadPopup>
 
     <!-- 登录/用户模态框 -->
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h3>{{ isLoggedIn ? '用户管理' : '登录' }}</h3>
+          <h3>{{ isLoggedIn ? "用户管理" : "登录" }}</h3>
           <button class="close-button" @click="closeModal">&times;</button>
         </div>
         <div class="modal-body">
@@ -22,7 +29,9 @@
           <div v-if="isLoggedIn" class="user-info">
             <div class="current-user">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="#4CAF50">
-                <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                <path
+                  d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                />
               </svg>
               <div>
                 <p class="user-status">{{ getUserStatusText() }}</p>
@@ -30,7 +39,9 @@
               </div>
             </div>
             <div class="user-actions">
-              <button @click="switchUser" class="switch-user-button">切换用户</button>
+              <button @click="switchUser" class="switch-user-button">
+                切换用户
+              </button>
               <button @click="logout" class="logout-button">退出登录</button>
             </div>
           </div>
@@ -45,7 +56,7 @@
                 v-model="loginForm.username"
                 required
                 autocomplete="username"
-              >
+              />
             </div>
             <div class="form-group">
               <label for="password">密码:</label>
@@ -55,12 +66,18 @@
                 v-model="loginForm.password"
                 required
                 autocomplete="current-password"
-              >
+              />
             </div>
             <div class="form-actions">
-              <button type="button" @click="closeModal" class="cancel-button">取消</button>
-              <button type="submit" class="login-submit-button" :disabled="loginLoading">
-                {{ loginLoading ? '登录中...' : '登录' }}
+              <button type="button" @click="closeModal" class="cancel-button">
+                取消
+              </button>
+              <button
+                type="submit"
+                class="login-submit-button"
+                :disabled="loginLoading"
+              >
+                {{ loginLoading ? "登录中..." : "登录" }}
               </button>
             </div>
           </form>
@@ -70,21 +87,51 @@
     </div>
 
     <!-- 上传按钮 - 只有登录用户或有上传权限的游客才显示 -->
-    <button v-if="canUpload" class="upload-button circle" @click="showUploadPopup = true">
-      <svg t="1741764069699" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-        p-id="24280" width="24" height="24">
+    <button
+      v-if="canUpload"
+      class="upload-button circle"
+      @click="showUploadPopup = true"
+    >
+      <svg
+        t="1741764069699"
+        class="icon"
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="24280"
+        width="24"
+        height="24"
+      >
         <path
           d="M576 557.7088V934.4H448V560.4416l-43.8912 43.8848L313.6 513.8176l199.1232-199.1168 0.64 0.64 0.64-0.64 199.1232 199.1168-90.5088 90.5088L576 557.7088zM704 678.4h32c88.3648 0 160-71.6352 160-160s-71.6352-160-160-160c-20.5184 0-40.128 3.8592-58.1568 10.8992C670.336 270.1248 587.4944 192 486.4 192c-106.0416 0-192 85.9584-192 192 0 15.9104 1.9328 31.3728 5.5872 46.1568A127.7504 127.7504 0 0 0 256 422.4c-70.6944 0-128 57.3056-128 128s57.3056 128 128 128h64v128H256c-141.3824 0-256-114.6176-256-256 0-113.3184 73.632-209.4464 175.6608-243.136C210.0352 167.584 336.1216 64 486.4 64c121.312 0 227.552 67.712 281.7728 168.1792C912.0896 248.1792 1024 370.2208 1024 518.4c0 159.0592-128.9408 288-288 288h-32v-128z"
-          fill="#e6e6e6" p-id="24281"></path>
+          fill="#e6e6e6"
+          p-id="24281"
+        ></path>
       </svg>
     </button>
     <div class="app-bar">
-      <a class="app-title-container" style="display: flex; align-items: center;" href="/">
-        <img src="/assets/homescreen.png" alt="FlareDrive" style="height: 24px" />
-        <h1 class="app-title" style="font-size: 20px;margin: 0 25px 0 8px; user-select: none;">FlareDrive</h1>
+      <a
+        class="app-title-container"
+        style="display: flex; align-items: center"
+        href="/"
+      >
+        <img
+          src="/assets/homescreen.png"
+          alt="FlareDrive"
+          style="height: 24px"
+        />
+        <h1
+          class="app-title"
+          style="font-size: 20px; margin: 0 25px 0 8px; user-select: none"
+        >
+          FlareDrive
+        </h1>
       </a>
 
-      <div class="search-container" :class="{ 'search-expanded': isSearchExpanded }">
+      <div
+        class="search-container"
+        :class="{ 'search-expanded': isSearchExpanded }"
+      >
         <input
           type="search"
           v-model="search"
@@ -102,44 +149,93 @@
       <div class="app-bar-right">
         <!-- 登录/用户状态按钮 -->
         <div class="user-status-container">
-          <button class="user-status-button" @click="showLoginModal" :title="isLoggedIn ? '切换用户' : '登录'">
-            <svg v-if="!isLoggedIn" viewBox="0 0 24 24" width="18" height="18" fill="#666">
-              <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+          <button
+            class="user-status-button"
+            @click="showLoginModal"
+            :title="isLoggedIn ? '切换用户' : '登录'"
+          >
+            <svg
+              v-if="!isLoggedIn"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="#666"
+            >
+              <path
+                d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+              />
             </svg>
             <!-- 已登录状态的图标 -->
-            <svg v-else viewBox="0 0 24 24" width="18" height="18" fill="#4CAF50">
-              <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+            <svg
+              v-else
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="#4CAF50"
+            >
+              <path
+                d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+              />
             </svg>
             <span class="user-status-text">{{ getTopUserStatusText() }}</span>
           </button>
         </div>
 
         <div class="menu-button">
-        <button class="circle" @click="showMenu = true" style="display: flex; align-items: center;background-color: rgb(245, 245, 245);">
-          <p style="
-              white-space: nowrap;
-              margin: 0 10px 0 0;
-              font-size: 16px;
-              font-family: '寒蝉半圆体', -apple-system, BlinkMacSystemFont, 'Segoe UI Adjusted',
-    'Segoe UI', 'Liberation Sans', sans-serif;"
-              class="menu-button-text">
-            菜单
-          </p>
-          <svg t="1741761597964" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-            p-id="22027" width="24" height="24">
-            <path
-              d="M365 663.5v210.7c0 18.6-23.4 26.8-35 12.3L131.2 637.9c-13.3-16.6-1.5-41.1 19.8-41.1h80.7v-400c0-36.8 29.8-66.7 66.7-66.7 36.8 0 66.7 29.8 66.7 66.7v466.7h-0.1z m200-466.7h266.7c36.8 0 66.7 29.8 66.7 66.7s-29.8 66.7-66.7 66.7H565c-36.8 0-66.7-29.8-66.7-66.7 0-36.8 29.9-66.7 66.7-66.7z m0 266.7h200c36.8 0 66.7 29.8 66.7 66.6s-29.8 66.7-66.6 66.7H565c-36.8 0-66.7-29.8-66.7-66.7 0.1-36.8 29.9-66.6 66.7-66.6z m0 266.7h133.3c36.8 0 66.7 29.8 66.7 66.7 0 36.8-29.8 66.7-66.7 66.7H565c-36.8 0-66.7-29.8-66.7-66.7 0.1-36.9 29.9-66.7 66.7-66.7z"
-              p-id="22028" fill="#2c2c2c"></path>
-          </svg>
-        </button>
-        <Menu v-model="showMenu"
-          :items="[
-            { text: '按照名称排序A-Z' },
-            { text: '按照大小递增排序' },
-            { text: '按照大小递减排序' },
-            { text: '粘贴文件到此目录', disabled: !clipboard || !canWrite }
-          ]"
-          @click="onMenuClick" />
+          <button
+            class="circle"
+            @click="showMenu = true"
+            style="
+              display: flex;
+              align-items: center;
+              background-color: rgb(245, 245, 245);
+            "
+          >
+            <p
+              style="
+                white-space: nowrap;
+                margin: 0 10px 0 0;
+                font-size: 16px;
+                font-family:
+                  &quot;寒蝉半圆体&quot;,
+                  -apple-system,
+                  BlinkMacSystemFont,
+                  &quot;Segoe UI Adjusted&quot;,
+                  &quot;Segoe UI&quot;,
+                  &quot;Liberation Sans&quot;,
+                  sans-serif;
+              "
+              class="menu-button-text"
+            >
+              菜单
+            </p>
+            <svg
+              t="1741761597964"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="22027"
+              width="24"
+              height="24"
+            >
+              <path
+                d="M365 663.5v210.7c0 18.6-23.4 26.8-35 12.3L131.2 637.9c-13.3-16.6-1.5-41.1 19.8-41.1h80.7v-400c0-36.8 29.8-66.7 66.7-66.7 36.8 0 66.7 29.8 66.7 66.7v466.7h-0.1z m200-466.7h266.7c36.8 0 66.7 29.8 66.7 66.7s-29.8 66.7-66.7 66.7H565c-36.8 0-66.7-29.8-66.7-66.7 0-36.8 29.9-66.7 66.7-66.7z m0 266.7h200c36.8 0 66.7 29.8 66.7 66.6s-29.8 66.7-66.6 66.7H565c-36.8 0-66.7-29.8-66.7-66.7 0.1-36.8 29.9-66.6 66.7-66.6z m0 266.7h133.3c36.8 0 66.7 29.8 66.7 66.7 0 36.8-29.8 66.7-66.7 66.7H565c-36.8 0-66.7-29.8-66.7-66.7 0.1-36.9 29.9-66.7 66.7-66.7z"
+                p-id="22028"
+                fill="#2c2c2c"
+              ></path>
+            </svg>
+          </button>
+          <Menu
+            v-model="showMenu"
+            :items="[
+              { text: '按照名称排序A-Z' },
+              { text: '按照大小递增排序' },
+              { text: '按照大小递减排序' },
+              { text: '粘贴文件到此目录', disabled: !clipboard || !canWrite },
+            ]"
+            @click="onMenuClick"
+          />
         </div>
       </div>
     </div>
@@ -156,12 +252,24 @@
       </div>
 
       <!-- 文件操作工具栏 -->
-      <div v-if="!needLogin && !isMultiSelectMode && filteredFiles.length > 0" class="file-toolbar">
+      <div
+        v-if="!needLogin && !isMultiSelectMode && filteredFiles.length > 0"
+        class="file-toolbar"
+      >
         <div class="toolbar-left">
           <button @click="toggleMultiSelectMode" class="toolbar-btn primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 12l2 2 4-4"/>
-              <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.09 0 2.13.2 3.1.56"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 12l2 2 4-4" />
+              <path
+                d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.09 0 2.13.2 3.1.56"
+              />
             </svg>
             多选模式
           </button>
@@ -172,47 +280,93 @@
       <div v-if="isMultiSelectMode" class="multi-select-toolbar">
         <div class="toolbar-left">
           <button @click="toggleMultiSelectMode" class="toolbar-btn">
-            {{ isMultiSelectMode ? '退出多选' : '多选模式' }}
+            {{ isMultiSelectMode ? "退出多选" : "多选模式" }}
           </button>
           <span v-if="selectedFiles.length > 0" class="selected-count">
             已选择 {{ selectedFiles.length }} 个文件
           </span>
-          <button v-if="selectedFiles.length > 0" @click="selectAllFiles" class="toolbar-btn">
-            {{ selectedFiles.length === filteredFiles.length ? '取消全选' : '全选' }}
+          <button
+            v-if="selectedFiles.length > 0"
+            @click="selectAllFiles"
+            class="toolbar-btn"
+          >
+            {{
+              selectedFiles.length === filteredFiles.length
+                ? "取消全选"
+                : "全选"
+            }}
           </button>
         </div>
         <div v-if="selectedFiles.length > 0" class="toolbar-right">
           <button @click="batchDownload" class="toolbar-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7,10 12,15 17,10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7,10 12,15 17,10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
             下载
           </button>
           <button @click="batchCopy" class="toolbar-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              />
             </svg>
             复制
           </button>
           <button v-if="canWrite" @click="batchMove" class="toolbar-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <line x1="10" y1="9" x2="8" y2="9"/>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              />
+              <polyline points="14,2 14,8 20,8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <line x1="10" y1="9" x2="8" y2="9" />
             </svg>
             移动
           </button>
-          <button v-if="canWrite" @click="batchDelete" class="toolbar-btn danger">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3,6 5,6 21,6"/>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              <line x1="10" y1="11" x2="10" y2="17"/>
-              <line x1="14" y1="11" x2="14" y2="17"/>
+          <button
+            v-if="canWrite"
+            @click="batchDelete"
+            class="toolbar-btn danger"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="3,6 5,6 21,6" />
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
             </svg>
             删除
           </button>
@@ -222,39 +376,79 @@
       <!-- 文件列表 -->
       <ul v-if="!needLogin" class="file-list">
         <li v-if="cwd !== ''">
-          <div tabindex="0" class="file-item" @click="cwd = cwd.replace(/[^\/]+\/$/, '')" @contextmenu.prevent>
+          <div
+            tabindex="0"
+            class="file-item"
+            @click="cwd = cwd.replace(/[^\/]+\/$/, '')"
+            @contextmenu.prevent
+          >
             <div class="file-icon">
-              <svg  viewBox="0 0 576 512"
-                xmlns="http://www.w3.org/2000/svg" width="36" height="36">
-                <path d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"/>
+              <svg
+                viewBox="0 0 576 512"
+                xmlns="http://www.w3.org/2000/svg"
+                width="36"
+                height="36"
+              >
+                <path
+                  d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"
+                />
               </svg>
             </div>
-            <div class="file-info-container"><span class="file-name">返回上级目录</span></div>
-
+            <div class="file-info-container">
+              <span class="file-name">返回上级目录</span>
+            </div>
           </div>
         </li>
         <li v-for="folder in filteredFolders" :key="folder">
-          <div tabindex="0" class="file-item" @click="cwd = folder" @contextmenu.prevent="
-            showContextMenu = true;
-          focusedItem = folder;
-          ">
+          <div
+            tabindex="0"
+            class="file-item"
+            @click="cwd = folder"
+            @contextmenu.prevent="
+              showContextMenu = true;
+              focusedItem = folder;
+            "
+          >
             <div class="file-icon">
-              <svg  viewBox="0 0 576 512"
-                xmlns="http://www.w3.org/2000/svg" width="36" height="36">
-                <path d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"/>
+              <svg
+                viewBox="0 0 576 512"
+                xmlns="http://www.w3.org/2000/svg"
+                width="36"
+                height="36"
+              >
+                <path
+                  d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"
+                />
               </svg>
             </div>
-            <div class="file-info-container"><span class="file-name" v-text="folder.match(/.*?([^/]*)\/?$/)[1]"></span>
+            <div class="file-info-container">
+              <span
+                class="file-name"
+                v-text="folder.match(/.*?([^/]*)\/?$/)[1]"
+              ></span>
             </div>
-            <div style="margin-right: 10px;margin-left: auto;" @click.stop="
-              showContextMenu = true;
-            focusedItem = folder;
-            ">
-              <svg t="1741761103305" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                xmlns="http://www.w3.org/2000/svg" p-id="6484" width="30" height="30">
+            <div
+              style="margin-right: 10px; margin-left: auto"
+              @click.stop="
+                showContextMenu = true;
+                focusedItem = folder;
+              "
+            >
+              <svg
+                t="1741761103305"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="6484"
+                width="30"
+                height="30"
+              >
                 <path
                   d="M341.333333 533.333333a128 128 0 0 1 128 128v149.333334a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128v-149.333334a128 128 0 0 1 128-128h149.333333z m469.333334 0a128 128 0 0 1 128 128v149.333334a128 128 0 0 1-128 128h-149.333334a128 128 0 0 1-128-128v-149.333334a128 128 0 0 1 128-128h149.333334z m-469.333334 64H192a64 64 0 0 0-63.893333 60.245334L128 661.333333v149.333334a64 64 0 0 0 60.245333 63.893333L192 874.666667h149.333333a64 64 0 0 0 63.893334-60.245334L405.333333 810.666667v-149.333334a64 64 0 0 0-60.245333-63.893333L341.333333 597.333333z m469.333334 0h-149.333334a64 64 0 0 0-63.893333 60.245334L597.333333 661.333333v149.333334a64 64 0 0 0 60.245334 63.893333L661.333333 874.666667h149.333334a64 64 0 0 0 63.893333-60.245334L874.666667 810.666667v-149.333334a64 64 0 0 0-60.245334-63.893333L810.666667 597.333333zM341.333333 64a128 128 0 0 1 128 128v149.333333a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128V192a128 128 0 0 1 128-128h149.333333z m469.333334 0a128 128 0 0 1 128 128v149.333333a128 128 0 0 1-128 128h-149.333334a128 128 0 0 1-128-128V192a128 128 0 0 1 128-128h149.333334zM341.333333 128H192a64 64 0 0 0-63.893333 60.245333L128 192v149.333333a64 64 0 0 0 60.245333 63.893334L192 405.333333h149.333333a64 64 0 0 0 63.893334-60.245333L405.333333 341.333333V192a64 64 0 0 0-60.245333-63.893333L341.333333 128z m469.333334 0h-149.333334a64 64 0 0 0-63.893333 60.245333L597.333333 192v149.333333a64 64 0 0 0 60.245334 63.893334L661.333333 405.333333h149.333334a64 64 0 0 0 63.893333-60.245333L874.666667 341.333333V192a64 64 0 0 0-60.245334-63.893333L810.666667 128z"
-                  fill="#2c2c2c" p-id="6485"></path>
+                  fill="#2c2c2c"
+                  p-id="6485"
+                ></path>
               </svg>
             </div>
           </div>
@@ -262,55 +456,124 @@
         <li v-for="file in filteredFiles" :key="file.key">
           <div
             @click="handleFileClick(file)"
-            @contextmenu.prevent="showContextMenu = true; focusedItem = file;"
+            @contextmenu.prevent="
+              showContextMenu = true;
+              focusedItem = file;
+            "
             class="file-item"
-            style="position: relative;"
-            :class="{ 'selected': isFileSelected(file.key) }"
+            style="position: relative"
+            :class="{ selected: isFileSelected(file.key) }"
           >
             <!-- 多选复选框 -->
-            <div v-if="isMultiSelectMode" class="file-checkbox" @click.stop="toggleFileSelection(file.key)">
-              <input type="checkbox" :checked="isFileSelected(file.key)" @click.stop @change.stop="toggleFileSelection(file.key)">
+            <div
+              v-if="isMultiSelectMode"
+              class="file-checkbox"
+              @click.stop="toggleFileSelection(file.key)"
+            >
+              <input
+                type="checkbox"
+                :checked="isFileSelected(file.key)"
+                @click.stop
+                @change.stop="toggleFileSelection(file.key)"
+              />
             </div>
-            <MimeIcon :content-type="file.httpMetadata?.contentType || 'application/octet-stream'" :thumbnail="file.customMetadata?.thumbnail
-              ? `/raw/_$flaredrive$/thumbnails/${file.customMetadata.thumbnail}.png`
-              : null
-              " />
+            <MimeIcon
+              :content-type="
+                file.httpMetadata?.contentType || 'application/octet-stream'
+              "
+              :thumbnail="
+                file.customMetadata?.thumbnail
+                  ? `/raw/_$flaredrive$/thumbnails/${file.customMetadata.thumbnail}.png`
+                  : null
+              "
+            />
             <div class="file-info-container">
               <div class="file-name" v-text="file.key.split('/').pop()"></div>
               <div class="file-attr">
                 <!-- 搜索结果显示完整路径 -->
-                <span v-if="search && searchResults.length > 0" class="file-path" v-text="file.displayPath || file.key"></span>
-                <span v-if="file.uploaded" v-text="new Date(file.uploaded).toLocaleString()"></span>
+                <span
+                  v-if="search && searchResults.length > 0"
+                  class="file-path"
+                  v-text="file.displayPath || file.key"
+                ></span>
+                <span
+                  v-if="file.uploaded"
+                  v-text="new Date(file.uploaded).toLocaleString()"
+                ></span>
                 <span v-if="file.size" v-text="formatSize(file.size)"></span>
               </div>
             </div>
-            <div style="margin-right: 10px;margin-left: auto;"
-                 @click.stop="showContextMenu = true; focusedItem = file;"
-                 @touchstart.stop
-                 @touchend.stop>
-              <svg t="1741761103305" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                xmlns="http://www.w3.org/2000/svg" p-id="6484" width="30" height="30">
+            <div
+              style="margin-right: 10px; margin-left: auto"
+              @click.stop="
+                showContextMenu = true;
+                focusedItem = file;
+              "
+              @touchstart.stop
+              @touchend.stop
+            >
+              <svg
+                t="1741761103305"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="6484"
+                width="30"
+                height="30"
+              >
                 <path
                   d="M341.333333 533.333333a128 128 0 0 1 128 128v149.333334a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128v-149.333334a128 128 0 0 1 128-128h149.333333z m469.333334 0a128 128 0 0 1 128 128v149.333334a128 128 0 0 1-128 128h-149.333334a128 128 0 0 1-128-128v-149.333334a128 128 0 0 1 128-128h149.333334z m-469.333334 64H192a64 64 0 0 0-63.893333 60.245334L128 661.333333v149.333334a64 64 0 0 0 60.245333 63.893333L192 874.666667h149.333333a64 64 0 0 0 63.893334-60.245334L405.333333 810.666667v-149.333334a64 64 0 0 0-60.245333-63.893333L341.333333 597.333333z m469.333334 0h-149.333334a64 64 0 0 0-63.893333 60.245334L597.333333 661.333333v149.333334a64 64 0 0 0 60.245334 63.893333L661.333333 874.666667h149.333334a64 64 0 0 0 63.893333-60.245334L874.666667 810.666667v-149.333334a64 64 0 0 0-60.245334-63.893333L810.666667 597.333333zM341.333333 64a128 128 0 0 1 128 128v149.333333a128 128 0 0 1-128 128H192a128 128 0 0 1-128-128V192a128 128 0 0 1 128-128h149.333333z m469.333334 0a128 128 0 0 1 128 128v149.333333a128 128 0 0 1-128 128h-149.333334a128 128 0 0 1-128-128V192a128 128 0 0 1 128-128h149.333334zM341.333333 128H192a64 64 0 0 0-63.893333 60.245333L128 192v149.333333a64 64 0 0 0 60.245333 63.893334L192 405.333333h149.333333a64 64 0 0 0 63.893334-60.245333L405.333333 341.333333V192a64 64 0 0 0-60.245333-63.893333L341.333333 128z m469.333334 0h-149.333334a64 64 0 0 0-63.893333 60.245333L597.333333 192v149.333333a64 64 0 0 0 60.245334 63.893334L661.333333 405.333333h149.333334a64 64 0 0 0 63.893333-60.245333L874.666667 341.333333V192a64 64 0 0 0-60.245334-63.893333L810.666667 128z"
-                  fill="#2c2c2c" p-id="6485"></path>
+                  fill="#2c2c2c"
+                  p-id="6485"
+                ></path>
               </svg>
             </div>
           </div>
         </li>
       </ul>
 
-      <div v-if="loading && !needLogin" style="margin: 20px 0; text-align: center">
-        <span style="font-size: 20px;">加载中...</span>
+      <div
+        v-if="loading && !needLogin"
+        style="margin: 20px 0; text-align: center"
+      >
+        <span style="font-size: 20px">加载中...</span>
       </div>
-      <div v-else-if="!needLogin && !filteredFiles.length && !filteredFolders.length" style="margin: 20px 0; text-align: center">
-        <span style="font-size: 20px;">没有文件</span>
+      <div
+        v-else-if="
+          !needLogin && !filteredFiles.length && !filteredFolders.length
+        "
+        style="margin: 20px 0; text-align: center"
+      >
+        <span style="font-size: 20px">没有文件</span>
       </div>
     </div>
     <Dialog v-model="showContextMenu">
       <div
-        style="height: 50px;display: flex; justify-content: center; align-items: center; padding:10px; background: #ddd; margin: 0 0 10px 0; border-radius: 8px;">
-        <div v-text="focusedItem.key || focusedItem" class="contextmenu-filename" @click.stop.prevent
-          style="height:20px;width: 100%; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+        style="
+          height: 50px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 10px;
+          background: #ddd;
+          margin: 0 0 10px 0;
+          border-radius: 8px;
+        "
+      >
+        <div
+          v-text="focusedItem.key || focusedItem"
+          class="contextmenu-filename"
+          @click.stop.prevent
+          style="
+            height: 20px;
+            width: 100%;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          "
+        ></div>
       </div>
       <ul v-if="typeof focusedItem === 'string'" class="contextmenu-list">
         <li>
@@ -329,7 +592,10 @@
           </button>
         </li>
         <li v-if="canWrite">
-          <button style="color: red" @click="removeFile(focusedItem + '_$folder$')">
+          <button
+            style="color: red"
+            @click="removeFile(focusedItem + '_$folder$')"
+          >
             <span>删除</span>
           </button>
         </li>
@@ -384,56 +650,135 @@
 
     <!-- 自定义输入对话框 -->
     <Dialog v-model="showInputDialog">
-      <div style="padding: 20px;">
-        <h3 v-text="inputDialog.title" style="margin: 0 0 15px 0;"></h3>
+      <div style="padding: 20px">
+        <h3 v-text="inputDialog.title" style="margin: 0 0 15px 0"></h3>
         <input
           v-model="inputDialog.value"
           :placeholder="inputDialog.placeholder"
-          style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;"
+          style="
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+          "
           @keyup.enter="confirmInput"
           ref="inputField"
         />
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button @click="cancelInput" style="padding: 8px 16px; border: 1px solid #ddd; background: white; border-radius: 4px;">取消</button>
-          <button @click="confirmInput" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px;">确定</button>
+        <div style="display: flex; gap: 10px; justify-content: flex-end">
+          <button
+            @click="cancelInput"
+            style="
+              padding: 8px 16px;
+              border: 1px solid #ddd;
+              background: white;
+              border-radius: 4px;
+            "
+          >
+            取消
+          </button>
+          <button
+            @click="confirmInput"
+            style="
+              padding: 8px 16px;
+              background: #007bff;
+              color: white;
+              border: none;
+              border-radius: 4px;
+            "
+          >
+            确定
+          </button>
         </div>
       </div>
     </Dialog>
 
     <!-- 目录选择对话框 -->
     <Dialog v-model="showFolderDialog">
-      <div style="padding: 20px;">
-        <h3 v-text="folderDialog.title" style="margin: 0 0 15px 0;"></h3>
-        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+      <div style="padding: 20px">
+        <h3 v-text="folderDialog.title" style="margin: 0 0 15px 0"></h3>
+        <div
+          style="
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+          "
+        >
           <div
             v-for="(folder, index) in folderDialog.folders"
             :key="index"
             @click="selectFolder(folder)"
-            :class="{ 'selected': folderDialog.selectedFolder === folder.value }"
-            style="padding: 10px; cursor: pointer; border-bottom: 1px solid #eee;"
+            :class="{ selected: folderDialog.selectedFolder === folder.value }"
+            style="
+              padding: 10px;
+              cursor: pointer;
+              border-bottom: 1px solid #eee;
+            "
             :style="{
-              backgroundColor: folderDialog.selectedFolder === folder.value ? '#e3f2fd' : 'transparent',
-              fontWeight: folderDialog.selectedFolder === folder.value ? 'bold' : 'normal'
+              backgroundColor:
+                folderDialog.selectedFolder === folder.value
+                  ? '#e3f2fd'
+                  : 'transparent',
+              fontWeight:
+                folderDialog.selectedFolder === folder.value
+                  ? 'bold'
+                  : 'normal',
             }"
           >
             <span v-text="folder.display"></span>
           </div>
         </div>
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button @click="cancelFolderSelection" style="padding: 8px 16px; border: 1px solid #ddd; background: white; border-radius: 4px;">取消</button>
-          <button @click="confirmFolderSelection" :disabled="!folderDialog.selectedFolder" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; opacity: folderDialog.selectedFolder ? 1 : 0.5;">确定</button>
+        <div style="display: flex; gap: 10px; justify-content: flex-end">
+          <button
+            @click="cancelFolderSelection"
+            style="
+              padding: 8px 16px;
+              border: 1px solid #ddd;
+              background: white;
+              border-radius: 4px;
+            "
+          >
+            取消
+          </button>
+          <button
+            @click="confirmFolderSelection"
+            :disabled="!folderDialog.selectedFolder"
+            style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; opacity: folderDialog.selectedFolder ? 1 : 0.5;"
+          >
+            确定
+          </button>
         </div>
       </div>
     </Dialog>
 
     <!-- 自定义确认对话框 -->
     <Dialog v-model="showConfirmDialog">
-      <div style="padding: 20px;">
-        <h3 v-text="confirmDialog.title" style="margin: 0 0 15px 0;"></h3>
-        <p v-text="confirmDialog.message" style="margin: 0 0 20px 0; line-height: 1.5;"></p>
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button @click="cancelConfirm" style="padding: 8px 16px; border: 1px solid #ddd; background: white; border-radius: 4px;">{{ confirmDialog.cancelText || '取消' }}</button>
-          <button @click="confirmAction" :style="`padding: 8px 16px; background: ${confirmDialog.type === 'danger' ? '#dc3545' : '#007bff'}; color: white; border: none; border-radius: 4px;`">{{ confirmDialog.confirmText || '确定' }}</button>
+      <div style="padding: 20px">
+        <h3 v-text="confirmDialog.title" style="margin: 0 0 15px 0"></h3>
+        <p
+          v-text="confirmDialog.message"
+          style="margin: 0 0 20px 0; line-height: 1.5"
+        ></p>
+        <div style="display: flex; gap: 10px; justify-content: flex-end">
+          <button
+            @click="cancelConfirm"
+            style="
+              padding: 8px 16px;
+              border: 1px solid #ddd;
+              background: white;
+              border-radius: 4px;
+            "
+          >
+            {{ confirmDialog.cancelText || "取消" }}
+          </button>
+          <button
+            @click="confirmAction"
+            :style="`padding: 8px 16px; background: ${confirmDialog.type === 'danger' ? '#dc3545' : '#007bff'}; color: white; border: none; border-radius: 4px;`"
+          >
+            {{ confirmDialog.confirmText || "确定" }}
+          </button>
         </div>
       </div>
     </Dialog>
@@ -443,44 +788,78 @@
       v-if="clipboard && !isMobile"
       class="floating-paste-button desktop"
       :class="{ 'auto-hide': !isNearPasteButton }"
-      :style="{ left: pasteButtonPosition.x + 'px', top: pasteButtonPosition.y + 'px' }"
+      :style="{
+        left: pasteButtonPosition.x + 'px',
+        top: pasteButtonPosition.y + 'px',
+      }"
       @mousedown="startDragPasteButton"
       @click="handlePasteButtonClick"
       @mouseenter="isNearPasteButton = true"
       @mouseleave="isNearPasteButton = false"
     >
       <div class="paste-button-content">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+          <path
+            d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+          />
         </svg>
         <span>粘贴</span>
         <kbd class="shortcut-hint">Ctrl+V</kbd>
       </div>
       <div class="paste-file-info">
-        {{ Array.isArray(clipboard) ? `${clipboard.length} 个文件` : clipboard.split('/').pop() }}
+        {{
+          Array.isArray(clipboard)
+            ? `${clipboard.length} 个文件`
+            : clipboard.split("/").pop()
+        }}
       </div>
     </div>
 
     <!-- 移动端底部粘贴工具栏 -->
-    <div
-      v-if="clipboard && isMobile"
-      class="mobile-paste-toolbar"
-    >
+    <div v-if="clipboard && isMobile" class="mobile-paste-toolbar">
       <div class="paste-toolbar-content" @click="handlePasteButtonClick">
         <div class="paste-info">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+            <path
+              d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+            />
           </svg>
           <span class="paste-text">
-            粘贴 {{ Array.isArray(clipboard) ? `${clipboard.length} 个文件` : clipboard.split('/').pop() }}
+            粘贴
+            {{
+              Array.isArray(clipboard)
+                ? `${clipboard.length} 个文件`
+                : clipboard.split("/").pop()
+            }}
           </span>
         </div>
         <button class="paste-close-btn" @click.stop="clipboard = null">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
       </div>
@@ -489,34 +868,65 @@
     <!-- 自定义提示组件 -->
     <div v-if="showToast" class="custom-toast" :class="toastType">
       <div class="toast-content">
-        <svg v-if="toastType === 'success'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 12l2 2 4-4"/>
-          <circle cx="12" cy="12" r="10"/>
+        <svg
+          v-if="toastType === 'success'"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M9 12l2 2 4-4" />
+          <circle cx="12" cy="12" r="10" />
         </svg>
-        <svg v-else-if="toastType === 'error'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="15" y1="9" x2="9" y2="15"/>
-          <line x1="9" y1="9" x2="15" y2="15"/>
+        <svg
+          v-else-if="toastType === 'error'"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="15" y1="9" x2="9" y2="15" />
+          <line x1="9" y1="9" x2="15" y2="15" />
         </svg>
-        <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        <svg
+          v-else
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
         <span>{{ toastMessage }}</span>
       </div>
     </div>
 
-    <div style="flex:1"></div>
+    <div style="flex: 1"></div>
 
     <!-- 快捷键说明 -->
     <div v-if="!needLogin" class="keyboard-shortcuts">
       <div class="shortcuts-container">
         <h4 class="shortcuts-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
           </svg>
           快捷键
         </h4>
@@ -590,11 +1000,11 @@ export default {
     // 模态框相关
     showModal: false,
     loginForm: {
-      username: '',
-      password: ''
+      username: "",
+      password: "",
     },
     loginLoading: false,
-    loginError: '',
+    loginError: "",
     // 媒体预览相关
     showMediaPreview: false,
     previewMediaList: [],
@@ -602,29 +1012,29 @@ export default {
     // 自定义对话框相关
     showInputDialog: false,
     inputDialog: {
-      title: '',
-      placeholder: '',
-      value: '',
+      title: "",
+      placeholder: "",
+      value: "",
       resolve: null,
-      reject: null
+      reject: null,
     },
     showFolderDialog: false,
     folderDialog: {
-      title: '',
+      title: "",
       folders: [],
       selectedFolder: null,
       resolve: null,
-      reject: null
+      reject: null,
     },
     showConfirmDialog: false,
     confirmDialog: {
-      title: '',
-      message: '',
-      type: 'default', // 'default', 'danger'
-      confirmText: '',
-      cancelText: '',
+      title: "",
+      message: "",
+      type: "default", // 'default', 'danger'
+      confirmText: "",
+      cancelText: "",
       resolve: null,
-      reject: null
+      reject: null,
     },
     // 浮动粘贴按钮相关
     pasteButtonPosition: { x: 0, y: 0 },
@@ -634,21 +1044,21 @@ export default {
     hasMoved: false,
     // 自定义提示相关
     showToast: false,
-    toastMessage: '',
-    toastType: 'success', // 'success', 'error', 'warning'
+    toastMessage: "",
+    toastType: "success", // 'success', 'error', 'warning'
     // 多选功能相关
     selectedFiles: [], // 选中的文件列表
     isMultiSelectMode: false, // 是否处于多选模式
     showBatchActions: false, // 是否显示批量操作栏
     // 粘贴按钮相关
-    isNearPasteButton: false
+    isNearPasteButton: false,
   }),
 
   computed: {
     filteredFiles() {
       // 如果有搜索词且有搜索结果，显示搜索结果
       if (this.search && this.searchResults.length > 0) {
-        return this.searchResults.filter(item => !item.isFolder);
+        return this.searchResults.filter((item) => !item.isFolder);
       }
 
       // 否则显示当前目录的文件
@@ -656,7 +1066,11 @@ export default {
       if (this.search && !this.isSearching) {
         // 本地搜索作为备选
         files = files.filter((file) =>
-          file.key.split("/").pop().toLowerCase().includes(this.search.toLowerCase())
+          file.key
+            .split("/")
+            .pop()
+            .toLowerCase()
+            .includes(this.search.toLowerCase()),
         );
       }
       return files;
@@ -665,7 +1079,9 @@ export default {
     filteredFolders() {
       // 如果有搜索词且有搜索结果，显示搜索结果中的文件夹
       if (this.search && this.searchResults.length > 0) {
-        return this.searchResults.filter(item => item.isFolder).map(item => item.key);
+        return this.searchResults
+          .filter((item) => item.isFolder)
+          .map((item) => item.key);
       }
 
       // 否则显示当前目录的文件夹
@@ -673,7 +1089,7 @@ export default {
       if (this.search && !this.isSearching) {
         // 本地搜索作为备选
         folders = folders.filter((folder) =>
-          folder.toLowerCase().includes(this.search.toLowerCase())
+          folder.toLowerCase().includes(this.search.toLowerCase()),
         );
       }
       return folders;
@@ -692,8 +1108,6 @@ export default {
       // 已登录用户可以上传
       return this.isLoggedIn;
     },
-
-
 
     // 检查是否是只读用户
     isReadOnlyUser() {
@@ -722,7 +1136,7 @@ export default {
 
   mounted() {
     // 检查是否有保存的认证信息
-    const savedCredentials = localStorage.getItem('authCredentials');
+    const savedCredentials = localStorage.getItem("authCredentials");
     if (savedCredentials) {
       this.setAuthHeader(savedCredentials);
       // 恢复用户信息
@@ -732,16 +1146,16 @@ export default {
     this.initPasteButtonPosition();
 
     // 添加键盘快捷键监听
-    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener("keydown", this.handleKeyDown);
   },
 
   beforeUnmount() {
     // 清理事件监听器
-    document.removeEventListener('mousemove', this.dragPasteButton);
-    document.removeEventListener('mouseup', this.stopDragPasteButton);
-    document.removeEventListener('touchmove', this.dragPasteButton);
-    document.removeEventListener('touchend', this.stopDragPasteButton);
-    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener("mousemove", this.dragPasteButton);
+    document.removeEventListener("mouseup", this.stopDragPasteButton);
+    document.removeEventListener("touchmove", this.dragPasteButton);
+    document.removeEventListener("touchend", this.stopDragPasteButton);
+    document.removeEventListener("keydown", this.handleKeyDown);
   },
 
   methods: {
@@ -758,9 +1172,9 @@ export default {
         this.isSearching = false;
         this.isSearchExpanded = false;
         // 恢复页面滚动
-        document.body.style.overflow = '';
-        document.body.style.overflowX = '';
-        document.documentElement.style.overflowX = '';
+        document.body.style.overflow = "";
+        document.body.style.overflowX = "";
+        document.documentElement.style.overflowX = "";
         return;
       }
 
@@ -775,9 +1189,9 @@ export default {
       this.isSearchExpanded = true;
       // 防止页面滚动（仅在移动端）
       if (window.innerWidth <= 768) {
-        document.body.style.overflow = 'hidden';
-        document.body.style.overflowX = 'hidden'; // 强制防止水平滚动
-        document.documentElement.style.overflowX = 'hidden'; // 也设置html元素
+        document.body.style.overflow = "hidden";
+        document.body.style.overflowX = "hidden"; // 强制防止水平滚动
+        document.documentElement.style.overflowX = "hidden"; // 也设置html元素
       }
     },
 
@@ -788,9 +1202,9 @@ export default {
         if (!this.search.trim()) {
           this.isSearchExpanded = false;
           // 恢复页面滚动
-          document.body.style.overflow = '';
-          document.body.style.overflowX = '';
-          document.documentElement.style.overflowX = '';
+          document.body.style.overflow = "";
+          document.body.style.overflowX = "";
+          document.documentElement.style.overflowX = "";
         }
       }, 200);
     },
@@ -803,11 +1217,11 @@ export default {
       try {
         // 这里可以实现实际的搜索逻辑
         // 暂时使用本地过滤作为示例
-        this.searchResults = this.files.filter(file =>
-          file.key.toLowerCase().includes(this.search.toLowerCase())
+        this.searchResults = this.files.filter((file) =>
+          file.key.toLowerCase().includes(this.search.toLowerCase()),
         );
       } catch (error) {
-        console.error('搜索失败:', error);
+        console.error("搜索失败:", error);
       } finally {
         this.isSearching = false;
       }
@@ -821,7 +1235,7 @@ export default {
     // 复制单个文件到剪贴板
     copyFile(fileKey) {
       this.clipboard = fileKey;
-      this.showCustomToast('文件已复制到剪贴板', 'success');
+      this.showCustomToast("文件已复制到剪贴板", "success");
       // 关闭右键菜单
       this.showContextMenu = false;
     },
@@ -832,47 +1246,51 @@ export default {
       // 准备请求头
       const headers = {
         "x-amz-copy-source": encodeURIComponent(source),
-        "Content-Type": "application/octet-stream"
+        "Content-Type": "application/octet-stream",
       };
-      const savedCredentials = localStorage.getItem('authCredentials');
+      const savedCredentials = localStorage.getItem("authCredentials");
       if (savedCredentials) {
-        headers['Authorization'] = `Basic ${savedCredentials}`;
+        headers["Authorization"] = `Basic ${savedCredentials}`;
       }
 
-      console.log('🔄 copyPaste 开始:', { source, target, uploadUrl });
+      console.log("🔄 copyPaste 开始:", { source, target, uploadUrl });
 
       try {
         const response = await fetch(uploadUrl, {
-          method: 'PUT',
+          method: "PUT",
           headers: headers,
-          body: ""
+          body: "",
         });
 
-        console.log('🔄 copyPaste 响应:', {
+        console.log("🔄 copyPaste 响应:", {
           status: response.status,
           statusText: response.statusText,
-          ok: response.ok
+          ok: response.ok,
         });
 
         // 检查响应状态
         if (!response.ok) {
           if (response.status === 401 || response.status === 403) {
             // 抛出特殊的权限错误，让调用方处理
-            const authError = new Error(`权限不足：无法写入到目标路径 ${target}`);
+            const authError = new Error(
+              `权限不足：无法写入到目标路径 ${target}`,
+            );
             authError.isAuthError = true;
             authError.status = response.status;
-            console.log('🔒 copyPaste 权限错误:', authError);
+            console.log("🔒 copyPaste 权限错误:", authError);
             throw authError;
           }
           // 其他HTTP错误
-          const httpError = new Error(`HTTP ${response.status}: ${response.statusText}`);
-          console.log('❌ copyPaste HTTP错误:', httpError);
+          const httpError = new Error(
+            `HTTP ${response.status}: ${response.statusText}`,
+          );
+          console.log("❌ copyPaste HTTP错误:", httpError);
           throw httpError;
         }
 
-        console.log('✅ copyPaste 成功完成');
+        console.log("✅ copyPaste 成功完成");
       } catch (error) {
-        console.log('❌ copyPaste 捕获错误:', error);
+        console.log("❌ copyPaste 捕获错误:", error);
 
         // 如果已经是我们的权限错误，直接抛出
         if (error.isAuthError) {
@@ -880,7 +1298,10 @@ export default {
         }
 
         // 检查是否是网络错误导致的权限问题
-        if (error.message && (error.message.includes('401') || error.message.includes('403'))) {
+        if (
+          error.message &&
+          (error.message.includes("401") || error.message.includes("403"))
+        ) {
           const authError = new Error(`权限不足：无法写入到目标路径 ${target}`);
           authError.isAuthError = true;
           authError.originalError = error;
@@ -900,22 +1321,22 @@ export default {
 
       // 准备请求头
       const headers = {};
-      const savedCredentials = localStorage.getItem('authCredentials');
+      const savedCredentials = localStorage.getItem("authCredentials");
       if (savedCredentials) {
-        headers['Authorization'] = `Basic ${savedCredentials}`;
+        headers["Authorization"] = `Basic ${savedCredentials}`;
       }
 
       try {
         const response = await fetch(deleteUrl, {
-          method: 'DELETE',
-          headers: headers
+          method: "DELETE",
+          headers: headers,
         });
 
         // 检查响应状态
         if (!response.ok) {
           if (response.status === 401 || response.status === 403) {
             // 抛出特殊的权限错误，让调用方处理
-            const authError = new Error('需要登录或权限不足');
+            const authError = new Error("需要登录或权限不足");
             authError.isAuthError = true;
             authError.status = response.status;
             throw authError;
@@ -935,7 +1356,10 @@ export default {
 
     async createFolder() {
       try {
-        const folderName = await this.showInputPrompt("创建文件夹", "请输入文件夹名称");
+        const folderName = await this.showInputPrompt(
+          "创建文件夹",
+          "请输入文件夹名称",
+        );
         if (!folderName) return;
         this.showUploadPopup = false;
         const uploadUrl = `/api/write/items/${this.cwd}${folderName}/_$folder$`;
@@ -947,7 +1371,7 @@ export default {
           .then((value) => {
             if (value.redirected) window.location.href = value.url;
           })
-          .catch(() => { });
+          .catch(() => {});
         console.log(`Create folder failed`);
       }
     },
@@ -960,9 +1384,9 @@ export default {
 
       // 准备请求头
       const headers = {};
-      const savedCredentials = localStorage.getItem('authCredentials');
+      const savedCredentials = localStorage.getItem("authCredentials");
       if (savedCredentials) {
-        headers['Authorization'] = `Basic ${savedCredentials}`;
+        headers["Authorization"] = `Basic ${savedCredentials}`;
       }
 
       fetch(`/api/children/${this.cwd}`, { headers })
@@ -993,7 +1417,7 @@ export default {
           this.loading = false;
         })
         .catch((error) => {
-          console.error('获取文件列表失败:', error);
+          console.error("获取文件列表失败:", error);
           this.loading = false;
         });
     },
@@ -1029,35 +1453,37 @@ export default {
     // 显示登录模态框
     showLoginModal() {
       this.showModal = true;
-      this.loginError = '';
-      this.loginForm.username = '';
-      this.loginForm.password = '';
+      this.loginError = "";
+      this.loginForm.username = "";
+      this.loginForm.password = "";
     },
 
     // 关闭登录模态框
     closeModal() {
       this.showModal = false;
-      this.loginError = '';
+      this.loginError = "";
       this.loginLoading = false;
     },
 
     // 处理登录
     async handleLogin() {
       this.loginLoading = true;
-      this.loginError = '';
+      this.loginError = "";
 
       try {
         // 创建Basic Auth头
-        const credentials = btoa(`${this.loginForm.username}:${this.loginForm.password}`);
+        const credentials = btoa(
+          `${this.loginForm.username}:${this.loginForm.password}`,
+        );
 
         // 使用专门的登录端点验证
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
           headers: {
-            'Authorization': `Basic ${credentials}`,
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
-          }
+            Authorization: `Basic ${credentials}`,
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
         });
 
         const data = await response.json();
@@ -1077,19 +1503,22 @@ export default {
           }, 100);
         } else {
           // 处理登录失败，包括限制相关的错误
-          this.loginError = data.message || '登录失败';
+          this.loginError = data.message || "登录失败";
 
           // 如果用户被封禁，显示特殊样式
           if (data.banned) {
             this.loginError = `🔒 ${this.loginError}`;
-          } else if (data.remainingAttempts !== undefined && data.remainingAttempts < 5) {
+          } else if (
+            data.remainingAttempts !== undefined &&
+            data.remainingAttempts < 5
+          ) {
             // 如果剩余尝试次数较少，给出警告
             this.loginError += ` ⚠️`;
           }
         }
       } catch (error) {
-        this.loginError = '登录失败，请重试';
-        console.error('登录错误:', error);
+        this.loginError = "登录失败，请重试";
+        console.error("登录错误:", error);
       } finally {
         this.loginLoading = false;
       }
@@ -1098,30 +1527,31 @@ export default {
     // 设置认证头
     setAuthHeader(credentials, userInfo = null) {
       // 将认证信息存储到localStorage，以便后续请求使用
-      localStorage.setItem('authCredentials', credentials);
+      localStorage.setItem("authCredentials", credentials);
 
       // 如果提供了用户信息，也保存到localStorage
       if (userInfo) {
-        localStorage.setItem('currentUser', JSON.stringify(userInfo));
+        localStorage.setItem("currentUser", JSON.stringify(userInfo));
       }
 
       // 设置默认的axios请求头
       if (window.axios) {
-        window.axios.defaults.headers.common['Authorization'] = `Basic ${credentials}`;
+        window.axios.defaults.headers.common["Authorization"] =
+          `Basic ${credentials}`;
       }
     },
 
     // 恢复用户信息
     restoreUserInfo() {
       try {
-        const savedUserInfo = localStorage.getItem('currentUser');
+        const savedUserInfo = localStorage.getItem("currentUser");
         if (savedUserInfo) {
           this.currentUser = JSON.parse(savedUserInfo);
           this.isLoggedIn = true;
           this.isGuest = false;
         }
       } catch (error) {
-        console.error('恢复用户信息失败:', error);
+        console.error("恢复用户信息失败:", error);
         // 出错时清除认证信息
         this.clearAuthHeader();
       }
@@ -1130,46 +1560,46 @@ export default {
     // 获取用户状态文本
     getUserStatusText() {
       if (this.isGuest) {
-        return '游客模式';
+        return "游客模式";
       } else if (this.currentUser) {
         const username = this.currentUser.username;
-        const readOnlyText = this.currentUser.isReadOnly ? ' (只读)' : '';
+        const readOnlyText = this.currentUser.isReadOnly ? " (只读)" : "";
         return `${username} 已登录${readOnlyText}`;
       } else {
-        return '已登录';
+        return "已登录";
       }
     },
 
     // 获取顶部用户状态文本（简化版）
     getTopUserStatusText() {
       if (!this.isLoggedIn) {
-        return '登录';
+        return "登录";
       } else if (this.currentUser) {
         const username = this.currentUser.username;
-        const readOnlyText = this.currentUser.isReadOnly ? ' (只读)' : '';
+        const readOnlyText = this.currentUser.isReadOnly ? " (只读)" : "";
         return `${username}${readOnlyText}`;
       } else {
-        return '已登录';
+        return "已登录";
       }
     },
 
     // 获取用户描述文本
     getUserDescText() {
       if (this.isGuest) {
-        return '只能查看文件';
+        return "只能查看文件";
       } else if (this.isReadOnlyUser) {
-        return '只能查看文件，无法上传或修改';
+        return "只能查看文件，无法上传或修改";
       } else {
-        return '可以上传和管理文件';
+        return "可以上传和管理文件";
       }
     },
 
     // 清除认证头
     clearAuthHeader() {
-      localStorage.removeItem('authCredentials');
-      localStorage.removeItem('currentUser');
+      localStorage.removeItem("authCredentials");
+      localStorage.removeItem("currentUser");
       if (window.axios) {
-        delete window.axios.defaults.headers.common['Authorization'];
+        delete window.axios.defaults.headers.common["Authorization"];
       }
     },
 
@@ -1178,9 +1608,9 @@ export default {
       this.isLoggedIn = false;
       this.isGuest = true;
       this.needLogin = false;
-      this.loginForm.username = '';
-      this.loginForm.password = '';
-      this.loginError = '';
+      this.loginForm.username = "";
+      this.loginForm.password = "";
+      this.loginError = "";
       // 不关闭模态框，直接切换到登录表单
     },
 
@@ -1201,14 +1631,14 @@ export default {
     },
 
     // 自定义输入对话框
-    showInputPrompt(title, placeholder = '', defaultValue = '') {
+    showInputPrompt(title, placeholder = "", defaultValue = "") {
       return new Promise((resolve, reject) => {
         this.inputDialog = {
           title,
           placeholder,
           value: defaultValue,
           resolve,
-          reject
+          reject,
         };
         this.showInputDialog = true;
         // 等待DOM更新后聚焦输入框
@@ -1240,11 +1670,11 @@ export default {
         this.confirmDialog = {
           title,
           message,
-          type: options.type || 'default',
-          confirmText: options.confirmText || '确定',
-          cancelText: options.cancelText || '取消',
+          type: options.type || "default",
+          confirmText: options.confirmText || "确定",
+          cancelText: options.cancelText || "取消",
           resolve,
-          reject
+          reject,
         };
         this.showConfirmDialog = true;
       });
@@ -1272,8 +1702,6 @@ export default {
       }
     },
 
-
-
     isFileSelected(fileKey) {
       return this.selectedFiles.includes(fileKey);
     },
@@ -1295,7 +1723,7 @@ export default {
         this.selectedFiles = [];
       } else {
         // 全选
-        this.selectedFiles = this.filteredFiles.map(file => file.key);
+        this.selectedFiles = this.filteredFiles.map((file) => file.key);
       }
     },
 
@@ -1305,18 +1733,21 @@ export default {
 
       try {
         for (const fileKey of this.selectedFiles) {
-          const link = document.createElement('a');
+          const link = document.createElement("a");
           link.href = `/raw/${fileKey}`;
-          link.download = fileKey.split('/').pop();
+          link.download = fileKey.split("/").pop();
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
           // 添加小延迟避免浏览器阻止多个下载
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
-        this.showCustomToast(`开始下载 ${this.selectedFiles.length} 个文件`, 'success');
+        this.showCustomToast(
+          `开始下载 ${this.selectedFiles.length} 个文件`,
+          "success",
+        );
       } catch (error) {
-        this.showCustomToast('批量下载失败: ' + error.message, 'error');
+        this.showCustomToast("批量下载失败: " + error.message, "error");
       }
     },
 
@@ -1324,8 +1755,14 @@ export default {
       if (this.selectedFiles.length === 0) return;
 
       // 复制操作不需要写权限，只是复制到剪贴板
-      this.clipboard = this.selectedFiles.length === 1 ? this.selectedFiles[0] : this.selectedFiles;
-      this.showCustomToast(`已复制 ${this.selectedFiles.length} 个文件到剪贴板`, 'success');
+      this.clipboard =
+        this.selectedFiles.length === 1
+          ? this.selectedFiles[0]
+          : this.selectedFiles;
+      this.showCustomToast(
+        `已复制 ${this.selectedFiles.length} 个文件到剪贴板`,
+        "success",
+      );
     },
 
     async batchMove() {
@@ -1333,28 +1770,31 @@ export default {
 
       // 检查写权限
       if (!this.canWrite) {
-        this.showPermissionDialog('移动文件');
+        this.showPermissionDialog("移动文件");
         return;
       }
 
       try {
-        console.log('🚀 开始批量移动文件:', this.selectedFiles);
+        console.log("🚀 开始批量移动文件:", this.selectedFiles);
 
         // 获取可访问的目录列表
         const accessibleFolders = await this.getAccessibleFolders();
 
         if (accessibleFolders.length === 0) {
-          this.showCustomToast('没有可用的目标目录，您可能没有足够的权限', 'error');
+          this.showCustomToast(
+            "没有可用的目标目录，您可能没有足够的权限",
+            "error",
+          );
           return;
         }
 
         // 显示目录选择对话框
         const targetPath = await this.showFolderSelector(
           `移动 ${this.selectedFiles.length} 个文件`,
-          accessibleFolders.map(folder => ({
+          accessibleFolders.map((folder) => ({
             value: folder.path,
-            display: folder.displayName
-          }))
+            display: folder.displayName,
+          })),
         );
 
         if (targetPath === null) return; // 用户取消
@@ -1365,8 +1805,9 @@ export default {
 
         for (const sourceFile of this.selectedFiles) {
           try {
-            const fileName = sourceFile.split('/').pop();
-            const targetFile = targetPath === '' ? fileName : `${targetPath}${fileName}`;
+            const fileName = sourceFile.split("/").pop();
+            const targetFile =
+              targetPath === "" ? fileName : `${targetPath}${fileName}`;
 
             await this.copyPaste(sourceFile, targetFile);
             await this.deleteFile(sourceFile);
@@ -1382,17 +1823,22 @@ export default {
         this.fetchFiles();
 
         if (failCount === 0) {
-          this.showCustomToast(`成功移动 ${successCount} 个文件`, 'success');
+          this.showCustomToast(`成功移动 ${successCount} 个文件`, "success");
         } else {
-          this.showCustomToast(`移动完成：成功 ${successCount} 个，失败 ${failCount} 个`, 'warning');
+          this.showCustomToast(
+            `移动完成：成功 ${successCount} 个，失败 ${failCount} 个`,
+            "warning",
+          );
         }
-
       } catch (error) {
-        console.error('批量移动失败:', error);
+        console.error("批量移动失败:", error);
         if (error.isAuthError) {
-          this.showPermissionDialog('移动文件');
+          this.showPermissionDialog("移动文件");
         } else {
-          this.showCustomToast('批量移动失败: ' + (error.message || '未知错误'), 'error');
+          this.showCustomToast(
+            "批量移动失败: " + (error.message || "未知错误"),
+            "error",
+          );
         }
       }
     },
@@ -1402,16 +1848,18 @@ export default {
 
       // 检查写权限
       if (!this.canWrite) {
-        this.showPermissionDialog('删除文件');
+        this.showPermissionDialog("删除文件");
         return;
       }
 
       try {
-        const fileNames = this.selectedFiles.map(key => key.split('/').pop()).join('、');
+        const fileNames = this.selectedFiles
+          .map((key) => key.split("/").pop())
+          .join("、");
         const confirmed = await this.showConfirmPrompt(
-          '批量删除文件',
+          "批量删除文件",
           `确定要删除以下 ${this.selectedFiles.length} 个文件吗？\n\n${fileNames}\n\n此操作无法撤销。`,
-          { type: 'danger', confirmText: '删除', cancelText: '取消' }
+          { type: "danger", confirmText: "删除", cancelText: "取消" },
         );
 
         if (!confirmed) return;
@@ -1434,19 +1882,24 @@ export default {
         this.fetchFiles();
 
         if (failCount === 0) {
-          this.showCustomToast(`成功删除 ${successCount} 个文件`, 'success');
+          this.showCustomToast(`成功删除 ${successCount} 个文件`, "success");
         } else {
-          this.showCustomToast(`删除完成：成功 ${successCount} 个，失败 ${failCount} 个`, 'warning');
+          this.showCustomToast(
+            `删除完成：成功 ${successCount} 个，失败 ${failCount} 个`,
+            "warning",
+          );
         }
-
       } catch (error) {
         if (error === false) return; // 用户取消
 
-        console.error('批量删除失败:', error);
+        console.error("批量删除失败:", error);
         if (error.isAuthError) {
-          this.showPermissionDialog('删除文件');
+          this.showPermissionDialog("删除文件");
         } else {
-          this.showCustomToast('批量删除失败: ' + (error.message || '未知错误'), 'error');
+          this.showCustomToast(
+            "批量删除失败: " + (error.message || "未知错误"),
+            "error",
+          );
         }
       }
     },
@@ -1454,28 +1907,37 @@ export default {
     // 键盘快捷键处理
     handleKeyDown(event) {
       // Ctrl+A 或 Cmd+A：切换多选模式
-      if ((event.ctrlKey || event.metaKey) && event.key === 'a' && !event.target.matches('input, textarea')) {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "a" &&
+        !event.target.matches("input, textarea")
+      ) {
         event.preventDefault();
         this.toggleMultiSelectMode();
         return;
       }
 
       // Ctrl+V 或 Cmd+V：粘贴文件
-      if ((event.ctrlKey || event.metaKey) && event.key === 'v' && !event.target.matches('input, textarea') && this.clipboard) {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "v" &&
+        !event.target.matches("input, textarea") &&
+        this.clipboard
+      ) {
         event.preventDefault();
         this.pasteFile();
         return;
       }
 
       // Escape：退出多选模式
-      if (event.key === 'Escape' && this.isMultiSelectMode) {
+      if (event.key === "Escape" && this.isMultiSelectMode) {
         this.isMultiSelectMode = false;
         this.selectedFiles = [];
         return;
       }
 
       // Delete：删除选中的文件
-      if (event.key === 'Delete' && this.selectedFiles.length > 0) {
+      if (event.key === "Delete" && this.selectedFiles.length > 0) {
         event.preventDefault();
         this.batchDelete();
         return;
@@ -1484,56 +1946,62 @@ export default {
 
     // 自定义文件夹选择对话框
     showFolderSelector(title, folders) {
-      console.log('📂 showFolderSelector 被调用:', { title, folders });
+      console.log("📂 showFolderSelector 被调用:", { title, folders });
       return new Promise((resolve, reject) => {
-        console.log('📂 创建 Promise，设置对话框状态');
+        console.log("📂 创建 Promise，设置对话框状态");
         this.folderDialog = {
           title,
           folders,
           selectedFolder: null,
           resolve: (value) => {
-            console.log('📂 对话框 resolve 被调用:', value);
+            console.log("📂 对话框 resolve 被调用:", value);
             resolve(value);
           },
           reject: (error) => {
-            console.log('📂 对话框 reject 被调用:', error);
+            console.log("📂 对话框 reject 被调用:", error);
             reject(error);
-          }
+          },
         };
         this.showFolderDialog = true;
-        console.log('📂 对话框显示状态设置为 true');
+        console.log("📂 对话框显示状态设置为 true");
       });
     },
 
     selectFolder(folder) {
-      console.log('📂 selectFolder 被调用:', folder);
+      console.log("📂 selectFolder 被调用:", folder);
       this.folderDialog.selectedFolder = folder.value;
-      console.log('📂 选中的文件夹:', this.folderDialog.selectedFolder);
+      console.log("📂 选中的文件夹:", this.folderDialog.selectedFolder);
     },
 
     confirmFolderSelection() {
-      console.log('📂 confirmFolderSelection 被调用');
-      console.log('📂 当前选中的文件夹:', this.folderDialog.selectedFolder);
-      console.log('📂 resolve 函数存在:', !!this.folderDialog.resolve);
+      console.log("📂 confirmFolderSelection 被调用");
+      console.log("📂 当前选中的文件夹:", this.folderDialog.selectedFolder);
+      console.log("📂 resolve 函数存在:", !!this.folderDialog.resolve);
 
-      if (this.folderDialog.resolve && this.folderDialog.selectedFolder !== null) {
-        console.log('📂 调用 resolve，返回值:', this.folderDialog.selectedFolder);
+      if (
+        this.folderDialog.resolve &&
+        this.folderDialog.selectedFolder !== null
+      ) {
+        console.log(
+          "📂 调用 resolve，返回值:",
+          this.folderDialog.selectedFolder,
+        );
         this.folderDialog.resolve(this.folderDialog.selectedFolder);
       } else {
-        console.log('📂 无法调用 resolve - 条件不满足');
+        console.log("📂 无法调用 resolve - 条件不满足");
       }
       this.showFolderDialog = false;
-      console.log('📂 对话框已关闭');
+      console.log("📂 对话框已关闭");
     },
 
     cancelFolderSelection() {
-      console.log('📂 cancelFolderSelection 被调用');
+      console.log("📂 cancelFolderSelection 被调用");
       if (this.folderDialog.reject) {
-        console.log('📂 调用 reject');
+        console.log("📂 调用 reject");
         this.folderDialog.reject(null);
       }
       this.showFolderDialog = false;
-      console.log('📂 对话框已取消并关闭');
+      console.log("📂 对话框已取消并关闭");
     },
 
     // 初始化粘贴按钮位置
@@ -1541,7 +2009,7 @@ export default {
       // 桌面端智能定位：右侧边缘，避开文件列表
       this.pasteButtonPosition = {
         x: window.innerWidth - 240,
-        y: 120
+        y: 120,
       };
     },
 
@@ -1558,13 +2026,13 @@ export default {
       this.dragOffset.y = clientY - this.pasteButtonPosition.y;
 
       // 添加鼠标和触摸事件监听
-      document.addEventListener('mousemove', this.dragPasteButton);
-      document.addEventListener('mouseup', this.stopDragPasteButton);
-      document.addEventListener('touchmove', this.dragPasteButton);
-      document.addEventListener('touchend', this.stopDragPasteButton);
+      document.addEventListener("mousemove", this.dragPasteButton);
+      document.addEventListener("mouseup", this.stopDragPasteButton);
+      document.addEventListener("touchmove", this.dragPasteButton);
+      document.addEventListener("touchend", this.stopDragPasteButton);
 
       // 阻止默认行为，但不阻止点击事件
-      if (event.type === 'touchstart') {
+      if (event.type === "touchstart") {
         event.preventDefault();
       }
     },
@@ -1584,18 +2052,24 @@ export default {
       // 限制在视窗范围内
       const buttonWidth = this.isMobile ? 50 : 120;
       const buttonHeight = this.isMobile ? 50 : 60;
-      this.pasteButtonPosition.x = Math.max(0, Math.min(window.innerWidth - buttonWidth, this.pasteButtonPosition.x));
-      this.pasteButtonPosition.y = Math.max(0, Math.min(window.innerHeight - buttonHeight, this.pasteButtonPosition.y));
+      this.pasteButtonPosition.x = Math.max(
+        0,
+        Math.min(window.innerWidth - buttonWidth, this.pasteButtonPosition.x),
+      );
+      this.pasteButtonPosition.y = Math.max(
+        0,
+        Math.min(window.innerHeight - buttonHeight, this.pasteButtonPosition.y),
+      );
 
       event.preventDefault();
     },
 
     stopDragPasteButton() {
       // 移除所有事件监听器
-      document.removeEventListener('mousemove', this.dragPasteButton);
-      document.removeEventListener('mouseup', this.stopDragPasteButton);
-      document.removeEventListener('touchmove', this.dragPasteButton);
-      document.removeEventListener('touchend', this.stopDragPasteButton);
+      document.removeEventListener("mousemove", this.dragPasteButton);
+      document.removeEventListener("mouseup", this.stopDragPasteButton);
+      document.removeEventListener("touchmove", this.dragPasteButton);
+      document.removeEventListener("touchend", this.stopDragPasteButton);
 
       // 桌面端智能吸附到边缘
       if (!this.isMobile && this.hasMoved) {
@@ -1625,7 +2099,10 @@ export default {
       }
 
       // 确保不超出屏幕边界
-      this.pasteButtonPosition.y = Math.max(80, Math.min(this.pasteButtonPosition.y, window.innerHeight - 100));
+      this.pasteButtonPosition.y = Math.max(
+        80,
+        Math.min(this.pasteButtonPosition.y, window.innerHeight - 100),
+      );
     },
 
     handleTouchEnd(event) {
@@ -1646,8 +2123,11 @@ export default {
       try {
         await this.pasteFile();
       } catch (error) {
-        console.error('粘贴文件失败:', error);
-        this.showCustomToast('粘贴文件失败: ' + (error.message || error), 'error');
+        console.error("粘贴文件失败:", error);
+        this.showCustomToast(
+          "粘贴文件失败: " + (error.message || error),
+          "error",
+        );
       }
     },
 
@@ -1697,9 +2177,18 @@ export default {
       }
 
       // 检查是否是媒体文件
-      const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-      const videoTypes = ['mp4', 'webm', 'ogv', 'avi', 'mov', 'wmv'];
-      const ext = file.key?.split('.').pop()?.toLowerCase();
+      const imageTypes = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "svg",
+        "bmp",
+        "ico",
+      ];
+      const videoTypes = ["mp4", "webm", "ogv", "avi", "mov", "wmv"];
+      const ext = file.key?.split(".").pop()?.toLowerCase();
       const isImageFile = imageTypes.includes(ext);
       const isVideoFile = videoTypes.includes(ext);
       const isMediaFile = isImageFile || isVideoFile;
@@ -1710,8 +2199,8 @@ export default {
       } else if (this.search && this.searchResults.length > 0) {
         // 搜索结果中的非媒体文件：跳转到文件所在目录
         const filePath = file.displayPath || file.key;
-        const directory = filePath.substring(0, filePath.lastIndexOf('/') + 1);
-        this.search = ''; // 清除搜索
+        const directory = filePath.substring(0, filePath.lastIndexOf("/") + 1);
+        this.search = ""; // 清除搜索
         this.searchResults = [];
         this.cwd = directory;
       } else {
@@ -1723,9 +2212,18 @@ export default {
     // 打开媒体预览
     openMediaPreview(clickedFile) {
       // 确定点击文件的类型
-      const imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-      const videoTypes = ['mp4', 'webm', 'ogv', 'avi', 'mov', 'wmv'];
-      const clickedExt = clickedFile.key?.split('.').pop()?.toLowerCase();
+      const imageTypes = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "webp",
+        "svg",
+        "bmp",
+        "ico",
+      ];
+      const videoTypes = ["mp4", "webm", "ogv", "avi", "mov", "wmv"];
+      const clickedExt = clickedFile.key?.split(".").pop()?.toLowerCase();
       const isClickedImage = imageTypes.includes(clickedExt);
       const isClickedVideo = videoTypes.includes(clickedExt);
 
@@ -1735,9 +2233,9 @@ export default {
 
       if (this.search && this.searchResults.length > 0) {
         // 搜索结果中的同类型媒体文件
-        mediaList = this.searchResults.filter(file => {
+        mediaList = this.searchResults.filter((file) => {
           if (file.isFolder) return false;
-          const ext = file.key?.split('.').pop()?.toLowerCase();
+          const ext = file.key?.split(".").pop()?.toLowerCase();
           if (isClickedImage) {
             return imageTypes.includes(ext);
           } else if (isClickedVideo) {
@@ -1747,8 +2245,8 @@ export default {
         });
       } else {
         // 当前目录中的同类型媒体文件
-        mediaList = this.filteredFiles.filter(file => {
-          const ext = file.key?.split('.').pop()?.toLowerCase();
+        mediaList = this.filteredFiles.filter((file) => {
+          const ext = file.key?.split(".").pop()?.toLowerCase();
           if (isClickedImage) {
             return imageTypes.includes(ext);
           } else if (isClickedVideo) {
@@ -1759,14 +2257,16 @@ export default {
       }
 
       // 为每个媒体文件添加预览URL
-      mediaList = mediaList.map(file => ({
+      mediaList = mediaList.map((file) => ({
         ...file,
         url: `/raw/${file.key}`,
-        name: file.key.split('/').pop()
+        name: file.key.split("/").pop(),
       }));
 
       // 找到点击文件的索引
-      initialIndex = mediaList.findIndex(file => file.key === clickedFile.key);
+      initialIndex = mediaList.findIndex(
+        (file) => file.key === clickedFile.key,
+      );
       if (initialIndex === -1) initialIndex = 0;
 
       // 设置预览数据
@@ -1787,7 +2287,7 @@ export default {
 
       // 检查写权限
       if (!this.canWrite) {
-        this.showPermissionDialog('粘贴文件');
+        this.showPermissionDialog("粘贴文件");
         return;
       }
 
@@ -1796,9 +2296,9 @@ export default {
         if (Array.isArray(this.clipboard)) {
           // 多文件粘贴
           const confirmed = await this.showConfirmPrompt(
-            '批量粘贴文件',
+            "批量粘贴文件",
             `确定要粘贴 ${this.clipboard.length} 个文件到当前目录吗？`,
-            { confirmText: '粘贴', cancelText: '取消' }
+            { confirmText: "粘贴", cancelText: "取消" },
           );
 
           if (!confirmed) return;
@@ -1808,7 +2308,7 @@ export default {
 
           for (const sourceFile of this.clipboard) {
             try {
-              const fileName = sourceFile.split('/').pop();
+              const fileName = sourceFile.split("/").pop();
               const targetFile = `${this.cwd}${fileName}`;
               await this.copyPaste(sourceFile, targetFile);
               successCount++;
@@ -1821,19 +2321,26 @@ export default {
           this.fetchFiles();
 
           if (failCount === 0) {
-            this.showCustomToast(`成功粘贴 ${successCount} 个文件`, 'success');
+            this.showCustomToast(`成功粘贴 ${successCount} 个文件`, "success");
           } else {
-            this.showCustomToast(`粘贴完成：成功 ${successCount} 个，失败 ${failCount} 个`, 'warning');
+            this.showCustomToast(
+              `粘贴完成：成功 ${successCount} 个，失败 ${failCount} 个`,
+              "warning",
+            );
           }
         } else {
           // 单文件粘贴
           const defaultName = this.clipboard.split("/").pop();
-          let newName = await this.showInputPrompt("粘贴文件", "重命名为:", defaultName);
+          let newName = await this.showInputPrompt(
+            "粘贴文件",
+            "重命名为:",
+            defaultName,
+          );
           if (newName === null || newName === undefined) return;
           if (newName === "") newName = defaultName;
           await this.copyPaste(this.clipboard, `${this.cwd}${newName}`);
           this.fetchFiles();
-          this.showCustomToast('文件粘贴成功', 'success');
+          this.showCustomToast("文件粘贴成功", "success");
         }
       } catch (error) {
         if (error === null || error === false) return; // 用户取消
@@ -1845,13 +2352,16 @@ export default {
           return;
         }
 
-        console.error('粘贴文件失败:', error);
-        this.showCustomToast('粘贴文件失败: ' + (error.message || '未知错误'), 'error');
+        console.error("粘贴文件失败:", error);
+        this.showCustomToast(
+          "粘贴文件失败: " + (error.message || "未知错误"),
+          "error",
+        );
       }
     },
 
     // 显示自定义提示
-    showCustomToast(message, type = 'success', duration = 3000) {
+    showCustomToast(message, type = "success", duration = 3000) {
       this.toastMessage = message;
       this.toastType = type;
       this.showToast = true;
@@ -1862,24 +2372,26 @@ export default {
     },
 
     // 显示权限对话框
-    showPermissionDialog(operation = '粘贴文件') {
+    showPermissionDialog(operation = "粘贴文件") {
       const message = this.isLoggedIn
         ? `您没有权限在此目录${operation}。可能需要更高级别的权限或者此目录为只读。`
         : `您需要登录才能在此目录${operation}。`;
 
-      const action = this.isLoggedIn ? '确定' : '立即登录';
+      const action = this.isLoggedIn ? "确定" : "立即登录";
 
       this.showConfirmPrompt(
-        '权限提示',
-        `${message}\n\n点击"${action}"${this.isLoggedIn ? '' : '进行身份验证'}`,
-        { confirmText: action, cancelText: '取消' }
-      ).then((confirmed) => {
-        if (confirmed && !this.isLoggedIn) {
-          this.showLoginModal();
-        }
-      }).catch(() => {
-        // 用户取消，不做任何操作
-      });
+        "权限提示",
+        `${message}\n\n点击"${action}"${this.isLoggedIn ? "" : "进行身份验证"}`,
+        { confirmText: action, cancelText: "取消" },
+      )
+        .then((confirmed) => {
+          if (confirmed && !this.isLoggedIn) {
+            this.showLoginModal();
+          }
+        })
+        .catch(() => {
+          // 用户取消，不做任何操作
+        });
     },
 
     async processUploadQueue() {
@@ -1907,7 +2419,7 @@ export default {
               .then((value) => {
                 if (value.redirected) window.location.href = value.url;
               })
-              .catch(() => { });
+              .catch(() => {});
             console.log(`Upload ${digestHex}.png failed`);
           }
         } catch (error) {
@@ -1937,7 +2449,7 @@ export default {
           .then((value) => {
             if (value.redirected) window.location.href = value.url;
           })
-          .catch(() => { });
+          .catch(() => {});
         console.log(`Upload ${file.name} failed`, error);
       }
       setTimeout(this.processUploadQueue);
@@ -1946,45 +2458,52 @@ export default {
     async removeFile(key) {
       // 检查写权限
       if (!this.canWrite) {
-        this.showPermissionDialog('删除文件');
+        this.showPermissionDialog("删除文件");
         return;
       }
 
       try {
-        const fileName = key.split('/').pop();
+        const fileName = key.split("/").pop();
         const confirmed = await this.showConfirmPrompt(
-          '删除文件',
+          "删除文件",
           `确定要删除文件 "${fileName}" 吗？此操作无法撤销。`,
-          { type: 'danger', confirmText: '删除', cancelText: '取消' }
+          { type: "danger", confirmText: "删除", cancelText: "取消" },
         );
         if (!confirmed) return;
 
         await this.deleteFile(key);
         this.fetchFiles();
-        this.showCustomToast(`文件 "${fileName}" 已删除`, 'success');
+        this.showCustomToast(`文件 "${fileName}" 已删除`, "success");
       } catch (error) {
         if (error === false) return; // 用户取消
 
         // 检查是否是权限错误
         if (error.isAuthError) {
-          this.showPermissionDialog('删除文件');
+          this.showPermissionDialog("删除文件");
           return;
         }
-        console.error('删除失败:', error);
-        this.showCustomToast('删除失败: ' + (error.message || '未知错误'), 'error');
+        console.error("删除失败:", error);
+        this.showCustomToast(
+          "删除失败: " + (error.message || "未知错误"),
+          "error",
+        );
       }
     },
 
     async renameFile(key) {
       // 检查写权限
       if (!this.canWrite) {
-        this.showPermissionDialog('重命名文件');
+        this.showPermissionDialog("重命名文件");
         return;
       }
 
       try {
-        const currentName = key.split('/').pop();
-        const newName = await this.showInputPrompt("重命名文件", "新名称:", currentName);
+        const currentName = key.split("/").pop();
+        const newName = await this.showInputPrompt(
+          "重命名文件",
+          "新名称:",
+          currentName,
+        );
         if (!newName) return;
         await this.copyPaste(key, `${this.cwd}${newName}`);
         await this.deleteFile(key);
@@ -1994,76 +2513,99 @@ export default {
 
         // 检查是否是权限错误
         if (error.isAuthError) {
-          this.showPermissionDialog('重命名文件');
+          this.showPermissionDialog("重命名文件");
           return;
         }
 
-        console.error('重命名失败:', error);
-        this.showCustomToast('重命名失败: ' + (error.message || '未知错误'), 'error');
+        console.error("重命名失败:", error);
+        this.showCustomToast(
+          "重命名失败: " + (error.message || "未知错误"),
+          "error",
+        );
       }
     },
 
     async moveFile(key) {
       // 检查写权限
       if (!this.canWrite) {
-        this.showPermissionDialog('移动文件');
+        this.showPermissionDialog("移动文件");
         return;
       }
 
       let targetPath = null; // 声明在外层作用域，以便错误处理时使用
 
-      console.log('🚀 开始移动文件:', key);
+      console.log("🚀 开始移动文件:", key);
 
       try {
         // 获取用户有权限的目录列表
-        console.log('📋 获取可访问目录列表...');
+        console.log("📋 获取可访问目录列表...");
         const accessibleFolders = await this.getAccessibleFolders();
-        console.log('📋 可访问目录:', accessibleFolders);
+        console.log("📋 可访问目录:", accessibleFolders);
 
         if (accessibleFolders.length === 0) {
-          console.log('❌ 没有可访问的目录');
-          this.showCustomToast('没有可用的目标目录，您可能没有足够的权限', 'error');
+          console.log("❌ 没有可访问的目录");
+          this.showCustomToast(
+            "没有可用的目标目录，您可能没有足够的权限",
+            "error",
+          );
           return;
         }
 
         // 构建选择列表
-        const folderOptions = accessibleFolders.map(folder => {
-          const displayName = folder.path === '' ? '根目录' :
-            folder.path === this.cwd ? '当前目录' :
-              folder.displayName;
+        const folderOptions = accessibleFolders.map((folder) => {
+          const displayName =
+            folder.path === ""
+              ? "根目录"
+              : folder.path === this.cwd
+                ? "当前目录"
+                : folder.displayName;
           return {
             display: displayName,
-            value: folder.path
+            value: folder.path,
           };
         });
-        console.log('📋 目录选择列表:', folderOptions);
+        console.log("📋 目录选择列表:", folderOptions);
 
         // 使用自定义文件夹选择器
-        console.log('📂 显示目录选择对话框...');
-        targetPath = await this.showFolderSelector('选择目标目录', folderOptions);
-        console.log('📂 用户选择的目标路径:', targetPath);
+        console.log("📂 显示目录选择对话框...");
+        targetPath = await this.showFolderSelector(
+          "选择目标目录",
+          folderOptions,
+        );
+        console.log("📂 用户选择的目标路径:", targetPath);
         if (targetPath === null || targetPath === undefined) {
-          console.log('❌ 用户取消了操作');
+          console.log("❌ 用户取消了操作");
           return; // 用户取消
         }
 
         // 获取文件名
-        const fileName = key.split('/').pop();
+        const fileName = key.split("/").pop();
         // 如果是文件夹,需要移除_$folder$后缀
-        const finalFileName = fileName.endsWith('_$folder$') ? fileName.slice(0, -9) : fileName;
-        console.log('📄 文件信息:', { fileName, finalFileName, isFolder: key.endsWith('_$folder$') });
+        const finalFileName = fileName.endsWith("_$folder$")
+          ? fileName.slice(0, -9)
+          : fileName;
+        console.log("📄 文件信息:", {
+          fileName,
+          finalFileName,
+          isFolder: key.endsWith("_$folder$"),
+        });
 
         // 修复：正确处理目标路径，避免双斜杠
-        const normalizedPath = targetPath === '' ? '' : (targetPath.endsWith('/') ? targetPath : targetPath + '/');
-        console.log('📁 路径信息:', { targetPath, normalizedPath });
+        const normalizedPath =
+          targetPath === ""
+            ? ""
+            : targetPath.endsWith("/")
+              ? targetPath
+              : targetPath + "/";
+        console.log("📁 路径信息:", { targetPath, normalizedPath });
 
         // 如果是目录（以_$folder$结尾），则需要移动整个目录内容
-        if (key.endsWith('_$folder$')) {
-          console.log('📁 检测到目录移动，开始处理目录内容...');
+        if (key.endsWith("_$folder$")) {
+          console.log("📁 检测到目录移动，开始处理目录内容...");
           // 获取源目录的基础路径（移除_$folder$后缀）
           const sourceBasePath = key.slice(0, -9);
           // 获取目标目录的基础路径，修复根目录的情况
-          const targetBasePath = normalizedPath + finalFileName + '/';
+          const targetBasePath = normalizedPath + finalFileName + "/";
 
           // 递归获取所有子文件和子目录
           const allItems = await this.getAllItems(sourceBasePath);
@@ -2097,7 +2639,7 @@ export default {
           }
 
           // 移动目录标记
-          const targetFolderPath = targetBasePath.slice(0, -1) + '_$folder$';
+          const targetFolderPath = targetBasePath.slice(0, -1) + "_$folder$";
           try {
             await this.copyPaste(key, targetFolderPath);
             await this.deleteFile(key);
@@ -2107,7 +2649,9 @@ export default {
               throw folderError;
             }
             // 其他错误也抛出
-            const error = new Error(`移动目录标记失败: ${folderError.message || folderError}`);
+            const error = new Error(
+              `移动目录标记失败: ${folderError.message || folderError}`,
+            );
             error.originalError = folderError;
             throw error;
           }
@@ -2118,31 +2662,33 @@ export default {
           // 单文件移动逻辑，修复根目录的情况
           const targetFilePath = normalizedPath + finalFileName;
 
-          console.log('🔍 移动文件调试信息:');
-          console.log('- 源文件:', key);
-          console.log('- 目标路径:', targetPath);
-          console.log('- 目标文件路径:', targetFilePath);
-          console.log('- 标准化路径:', normalizedPath);
+          console.log("🔍 移动文件调试信息:");
+          console.log("- 源文件:", key);
+          console.log("- 目标路径:", targetPath);
+          console.log("- 目标文件路径:", targetFilePath);
+          console.log("- 标准化路径:", normalizedPath);
 
           try {
-            console.log('📤 开始复制文件...');
+            console.log("📤 开始复制文件...");
             await this.copyPaste(key, targetFilePath);
-            console.log('✅ 复制成功，开始删除原文件...');
+            console.log("✅ 复制成功，开始删除原文件...");
             await this.deleteFile(key);
-            console.log('✅ 删除成功，移动完成');
+            console.log("✅ 删除成功，移动完成");
           } catch (moveError) {
-            console.error('❌ 移动过程中出错:', moveError);
-            console.log('- 错误类型:', typeof moveError);
-            console.log('- 是否权限错误:', moveError.isAuthError);
-            console.log('- 错误消息:', moveError.message);
-            console.log('- 完整错误对象:', moveError);
+            console.error("❌ 移动过程中出错:", moveError);
+            console.log("- 错误类型:", typeof moveError);
+            console.log("- 是否权限错误:", moveError.isAuthError);
+            console.log("- 错误消息:", moveError.message);
+            console.log("- 完整错误对象:", moveError);
 
             // 如果是权限错误，重新抛出以便外层catch处理
             if (moveError.isAuthError) {
               throw moveError;
             }
             // 其他错误也抛出，但添加更多上下文
-            const error = new Error(`移动文件失败: ${moveError.message || moveError}`);
+            const error = new Error(
+              `移动文件失败: ${moveError.message || moveError}`,
+            );
             error.originalError = moveError;
             throw error;
           }
@@ -2152,37 +2698,48 @@ export default {
         this.fetchFiles();
 
         // 显示成功提示
-        const targetDisplayName = targetPath === '' ? '根目录' :
-          targetPath.replace(/.*\/(?!$)|\//g, '') + '/';
+        const targetDisplayName =
+          targetPath === ""
+            ? "根目录"
+            : targetPath.replace(/.*\/(?!$)|\//g, "") + "/";
         const displayFileName = finalFileName; // 使用之前已经处理过的文件名
-        this.showCustomToast(`文件 "${displayFileName}" 已成功移动到 ${targetDisplayName}`, 'success');
+        this.showCustomToast(
+          `文件 "${displayFileName}" 已成功移动到 ${targetDisplayName}`,
+          "success",
+        );
       } catch (error) {
-        console.log('❌ 移动文件过程中捕获到错误:', error);
-        console.log('- 错误类型:', typeof error);
-        console.log('- 错误值:', error);
-        console.log('- 是否为null:', error === null);
-        console.log('- 是否权限错误:', error && error.isAuthError);
-        console.log('- 目标路径:', targetPath);
+        console.log("❌ 移动文件过程中捕获到错误:", error);
+        console.log("- 错误类型:", typeof error);
+        console.log("- 错误值:", error);
+        console.log("- 是否为null:", error === null);
+        console.log("- 是否权限错误:", error && error.isAuthError);
+        console.log("- 目标路径:", targetPath);
 
         if (error === null) {
-          console.log('✅ 用户取消操作');
+          console.log("✅ 用户取消操作");
           return; // 用户取消
         }
 
         // 检查是否是权限错误
         if (error.isAuthError) {
-          console.log('🔒 检测到权限错误，显示权限对话框');
-          this.showPermissionDialog('移动文件');
+          console.log("🔒 检测到权限错误，显示权限对话框");
+          this.showPermissionDialog("移动文件");
           return;
         }
 
-        console.error('❌ 移动失败:', error);
+        console.error("❌ 移动失败:", error);
 
         // 根据目标路径给出更具体的错误提示
-        const targetDisplayName = targetPath === '' ? '根目录' :
-          targetPath.replace(/.*\/(?!$)|\//g, '') + '/';
-        console.log('📢 显示错误提示:', targetDisplayName);
-        this.showCustomToast(`移动文件到 ${targetDisplayName} 失败：您可能没有该目录的写入权限，或者目标路径不正确。`, 'error', 5000);
+        const targetDisplayName =
+          targetPath === ""
+            ? "根目录"
+            : targetPath.replace(/.*\/(?!$)|\//g, "") + "/";
+        console.log("📢 显示错误提示:", targetDisplayName);
+        this.showCustomToast(
+          `移动文件到 ${targetDisplayName} 失败：您可能没有该目录的写入权限，或者目标路径不正确。`,
+          "error",
+          5000,
+        );
       }
     },
 
@@ -2200,17 +2757,17 @@ export default {
         try {
           // 准备请求头
           const headers = {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           };
-          const savedCredentials = localStorage.getItem('authCredentials');
+          const savedCredentials = localStorage.getItem("authCredentials");
           if (savedCredentials) {
-            headers['Authorization'] = `Basic ${savedCredentials}`;
+            headers["Authorization"] = `Basic ${savedCredentials}`;
           }
 
-          const response = await fetch('/api/auth/check-write-permission', {
-            method: 'POST',
+          const response = await fetch("/api/auth/check-write-permission", {
+            method: "POST",
             headers,
-            body: JSON.stringify({ path })
+            body: JSON.stringify({ path }),
           });
 
           const result = await response.json();
@@ -2234,11 +2791,11 @@ export default {
       const allPossibleFolders = new Set();
 
       // 1. 添加根目录
-      allPossibleFolders.add('');
+      allPossibleFolders.add("");
 
       // 2. 添加上级目录
-      if (this.cwd !== '') {
-        const parentPath = this.cwd.replace(/[^\/]+\/$/, '');
+      if (this.cwd !== "") {
+        const parentPath = this.cwd.replace(/[^\/]+\/$/, "");
         allPossibleFolders.add(parentPath);
       }
 
@@ -2252,9 +2809,9 @@ export default {
       // 5. 尝试发现根目录下的其他顶级目录
       try {
         const headers = {};
-        const savedCredentials = localStorage.getItem('authCredentials');
+        const savedCredentials = localStorage.getItem("authCredentials");
         if (savedCredentials) {
-          headers['Authorization'] = `Basic ${savedCredentials}`;
+          headers["Authorization"] = `Basic ${savedCredentials}`;
         }
 
         const response = await fetch(`/api/children/`, { headers });
@@ -2267,7 +2824,7 @@ export default {
           }
         }
       } catch (error) {
-        console.error('获取根目录失败:', error);
+        console.error("获取根目录失败:", error);
       }
 
       // 6. 检查每个目录的写入权限并构建结果
@@ -2280,34 +2837,38 @@ export default {
         if (await checkWritePermission(path)) {
           let displayName;
 
-          if (path === '') {
-            displayName = '根目录';
-          } else if (this.cwd !== '' && path === this.cwd.replace(/[^\/]+\/$/, '')) {
-            const parentDisplayName = path === '' ? '根目录' :
-              path.replace(/.*\/(?!$)|\//g, '') + '/';
+          if (path === "") {
+            displayName = "根目录";
+          } else if (
+            this.cwd !== "" &&
+            path === this.cwd.replace(/[^\/]+\/$/, "")
+          ) {
+            const parentDisplayName =
+              path === "" ? "根目录" : path.replace(/.*\/(?!$)|\//g, "") + "/";
             displayName = `上级目录 (${parentDisplayName})`;
           } else {
-            displayName = path.replace(/.*\/(?!$)|\//g, '') + '/';
+            displayName = path.replace(/.*\/(?!$)|\//g, "") + "/";
           }
 
           accessibleFolders.push({
             path: path,
-            displayName: displayName
+            displayName: displayName,
           });
         }
       }
 
       // 去重
-      const uniqueFolders = accessibleFolders.filter((folder, index, self) =>
-        index === self.findIndex(f => f.path === folder.path)
+      const uniqueFolders = accessibleFolders.filter(
+        (folder, index, self) =>
+          index === self.findIndex((f) => f.path === folder.path),
       );
 
       // 排序：根目录 -> 上级目录 -> 其他目录
       uniqueFolders.sort((a, b) => {
-        if (a.path === '') return -1;
-        if (b.path === '') return 1;
-        if (a.displayName.includes('上级目录')) return -1;
-        if (b.displayName.includes('上级目录')) return 1;
+        if (a.path === "") return -1;
+        if (b.path === "") return 1;
+        if (a.displayName.includes("上级目录")) return -1;
+        if (b.displayName.includes("上级目录")) return 1;
         return a.displayName.localeCompare(b.displayName);
       });
 
@@ -2322,14 +2883,14 @@ export default {
       do {
         const url = new URL(`/api/children/${prefix}`, window.location.origin);
         if (marker) {
-          url.searchParams.set('marker', marker);
+          url.searchParams.set("marker", marker);
         }
 
         // 准备请求头
         const headers = {};
-        const savedCredentials = localStorage.getItem('authCredentials');
+        const savedCredentials = localStorage.getItem("authCredentials");
         if (savedCredentials) {
-          headers['Authorization'] = `Basic ${savedCredentials}`;
+          headers["Authorization"] = `Basic ${savedCredentials}`;
         }
 
         const response = await fetch(url, { headers });
@@ -2342,7 +2903,7 @@ export default {
         for (const folder of data.folders) {
           // 添加目录标记
           items.push({
-            key: folder + '_$folder$',
+            key: folder + "_$folder$",
             size: 0,
             uploaded: new Date().toISOString(),
           });
@@ -2381,10 +2942,10 @@ export default {
 
       try {
         // 递归搜索所有目录
-        const results = await this.searchInDirectory('', searchTerm);
+        const results = await this.searchInDirectory("", searchTerm);
         this.searchResults = results;
       } catch (error) {
-        console.error('全局搜索失败:', error);
+        console.error("全局搜索失败:", error);
       } finally {
         this.isSearching = false;
       }
@@ -2397,9 +2958,9 @@ export default {
       try {
         // 准备请求头
         const headers = {};
-        const savedCredentials = localStorage.getItem('authCredentials');
+        const savedCredentials = localStorage.getItem("authCredentials");
         if (savedCredentials) {
-          headers['Authorization'] = `Basic ${savedCredentials}`;
+          headers["Authorization"] = `Basic ${savedCredentials}`;
         }
 
         const response = await fetch(`/api/children/${directory}`, { headers });
@@ -2412,12 +2973,12 @@ export default {
         // 搜索文件
         if (data.value) {
           for (const file of data.value) {
-            const fileName = file.key.split('/').pop();
+            const fileName = file.key.split("/").pop();
             if (fileName.toLowerCase().includes(searchTerm.toLowerCase())) {
               results.push({
                 ...file,
                 isFolder: false,
-                displayPath: file.key
+                displayPath: file.key,
               });
             }
           }
@@ -2426,20 +2987,27 @@ export default {
         // 搜索文件夹并递归
         if (data.folders) {
           for (const folder of data.folders) {
-            const folderName = folder.split('/').filter(Boolean).pop();
+            const folderName = folder.split("/").filter(Boolean).pop();
 
             // 如果文件夹名匹配搜索词，添加到结果
-            if (folderName && folderName.toLowerCase().includes(searchTerm.toLowerCase())) {
+            if (
+              folderName &&
+              folderName.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
               results.push({
                 key: folder,
                 isFolder: true,
-                displayPath: folder
+                displayPath: folder,
               });
             }
 
             // 递归搜索子目录（限制深度避免无限递归）
-            if (folder.split('/').length < 5) { // 最多搜索5层深度
-              const subResults = await this.searchInDirectory(folder, searchTerm);
+            if (folder.split("/").length < 5) {
+              // 最多搜索5层深度
+              const subResults = await this.searchInDirectory(
+                folder,
+                searchTerm,
+              );
               results.push(...subResults);
             }
           }
@@ -2465,9 +3033,10 @@ export default {
             : url.searchParams.delete("p");
           window.history.pushState(null, "", url.toString());
         }
-        document.title = this.cwd.replace(/.*\/(?!$)|\//g, "") === "/"
-            ? "FlareDrive-R2 - dl2300zxh Cloudflare R2 网盘文件库"
-            :`${this.cwd.replace(/.*\/(?!$)|\//g, "") || "/" } - dl2300zxh Cloudflare R2 网盘文件库`;
+        document.title =
+          this.cwd.replace(/.*\/(?!$)|\//g, "") === "/"
+            ? "FlareDrive-R2 - linkcccp Cloudflare R2 网盘文件库"
+            : `${this.cwd.replace(/.*\/(?!$)|\//g, "") || "/"} - linkcccp Cloudflare R2 网盘文件库`;
       },
       immediate: true,
     },
@@ -2483,8 +3052,8 @@ export default {
             this.searchResults = [];
           }
         }, 500); // 500ms 防抖
-      }
-    }
+      },
+    },
   },
 
   created() {
@@ -2572,11 +3141,11 @@ export default {
   }
 }
 
-.menu-button>button {
+.menu-button > button {
   transition: background-color 0.2s ease;
 }
 
-.menu-button>button:hover {
+.menu-button > button:hover {
   background-color: rgb(212, 212, 212);
 }
 
@@ -2845,8 +3414,6 @@ body:has(.mobile-paste-toolbar) {
     display: none;
   }
 }
-
-
 
 /* 自定义提示样式 */
 .custom-toast {
