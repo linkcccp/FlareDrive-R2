@@ -3035,8 +3035,8 @@ export default {
         }
         document.title =
           this.cwd.replace(/.*\/(?!$)|\//g, "") === "/"
-            ? "FlareDrive-R2 - linkcccp Cloudflare R2 网盘文件库"
-            : `${this.cwd.replace(/.*\/(?!$)|\//g, "") || "/"} - linkcccp Cloudflare R2 网盘文件库`;
+            ? "FlareDrive-R2 - Link's Cloudflare R2 网盘文件库"
+            : `${this.cwd.replace(/.*\/(?!$)|\//g, "") || "/"} - Link's Cloudflare R2 网盘文件库`;
       },
       immediate: true,
     },
